@@ -15,6 +15,20 @@ actions-runner-controller:
     actionsRunnerRepositoryAndTag: ghcr.io/actions/actions-runner:latest
   githubWebhookServer:
     enabled: true
+    ingress:
+      enabled: true
+      annotations:
+        cert-manager.io/cluster-issuer: letsencrypt
+      ingressClassName: traefik
+      tls:
+        - hosts:
+            - webhook.gha.karafra.net
+          secretName: gha-webhook-tls
+      hosts:
+        - host: webhook.gha.karafra.net
+          paths:
+            path: /
+            pathType: Prefix
     service:
       annotations:
         cert-manager.io/cluster-issuer: letsencrypt
