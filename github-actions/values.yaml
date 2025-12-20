@@ -27,8 +27,8 @@ actions-runner-controller:
       hosts:
         - host: webhook.gha.karafra.net
           paths:
-            path: /
-            pathType: Prefix
+            - path: /
+              pathType: Prefix
     service:
       annotations:
         cert-manager.io/cluster-issuer: letsencrypt
