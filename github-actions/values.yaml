@@ -13,6 +13,13 @@ actions-runner-controller:
   logFormat: json
   image:
     actionsRunnerRepositoryAndTag: ghcr.io/actions/actions-runner:latest
+  resources:
+    requests:
+      cpu: 100m
+      memory: 128Mi
+    limits:
+      cpu: 200m
+      memory: 256Mi
   githubWebhookServer:
     enabled: true
     secret:
