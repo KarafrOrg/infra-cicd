@@ -18,14 +18,16 @@ actions-runner-controller:
     service:
       annotations:
         cert-manager.io/cluster-issuer: letsencrypt
-  metrics:
-    serviceMonitor:
-      enable: true
-    serviceMonitorLabels:
-      metrics-collector: prometheus
   actionsMetrics:
     serviceMonitor:
       enable: true
+  actionsMetricsServer:
+    enabled: true
+    secret:
+      enabled: true
+      create: false
+      name: controller-manager-secret
+      externalSecretKey: github-actions-runner-controller-auth
   actionRunners:
     - name: runner-deployment-ubuntu-24.04
       apiVersion: actions.summerwind.dev/v1alpha1
