@@ -15,6 +15,11 @@ actions-runner-controller:
     actionsRunnerRepositoryAndTag: ghcr.io/actions/actions-runner:latest
   githubWebhookServer:
     enabled: true
+    secret:
+      enabled: true
+      create: false
+      name: github-actions-runner-controller-webhook-secret
+      externalSecretKey: github-actions-runner-controller-webhook-secret
     ingress:
       enabled: true
       annotations:
