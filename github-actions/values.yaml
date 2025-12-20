@@ -1,0 +1,59 @@
+actions-runner-controller:
+  replicaCount: 2
+  webhookPort: 9443
+  defaultScaleDownDelay: 1m
+  authSecret:
+    enabled: true
+    create: false
+    name: controller-manager-secret
+    externalSecretKey: github-actions-runner-controller-auth
+  serviceAccount:
+    create: true
+  certManagerEnabled: true
+  logFormat: json
+  image:
+    actionsRunnerRepositoryAndTag: ghcr.io/actions/actions-runner:latest
+  githubWebhookServer:
+    enabled: true
+    service:
+      annotations:
+        cert-manager.io/cluster-issuer: letsencrypt
+  metrics:
+    serviceMonitor:
+      enable: true
+    serviceMonitorLabels:
+      metrics-collector: prometheus
+  actionsMetrics:
+    serviceMonitor:
+      enable: true
+  actionRunners:
+    - name: runner-deployment-ubuntu-24.04
+      apiVersion: actions.summerwind.dev/v1alpha1
+      runnerLabels:
+        - ubuntu-24.04
+        - self-hosted
+        - dependabot
+      runnerGroup: self-hosted-ubuntu
+      image: ghcr.io/actions/actions-runner:latest
+      organization: KarafrOrg
+      resources:
+        requests:
+          cpu: 1500m
+          memory: 2000Mi
+        limits:
+          cpu: '2'
+          memory: 3000Mi
+  autoScalers:
+    - name: gha-runner-deployment-autoscaler
+      apiVersion: actions.summerwind.dev/v1alpha1
+      scaleTargetRef:
+        kind: RunnerDeployment
+        name: runner-deployment-ubuntu-24.04
+      maxReplicas: 10
+      minReplicas: 5
+      metrics:
+        - type: PercentageRunnersBusy
+          scaleUpThreshold: '0.75'
+          scaleDownThreshold: '0.3'
+          scaleUpAdjustment: 2
+          scaleDownAdjustment: 1

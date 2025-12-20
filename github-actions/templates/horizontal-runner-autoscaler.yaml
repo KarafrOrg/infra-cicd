@@ -1,0 +1,26 @@
+{{- range $autoScaler := index .Values "actions-runner-controller" "autoScalers" }}
+apiVersion: {{ $autoScaler.apiVersion | default "actions.summerwind.dev/v1alpha1" }}
+kind: HorizontalRunnerAutoscaler
+metadata:
+  name: {{ $autoScaler.name }}
+  {{- if hasKey $autoScaler "labels" }}
+  labels:
+    {{- range $key, $value := $autoScaler.labels }}
+      {{ $key }}: {{ $value | quote }}
+    {{- end }}
+  {{- end }}
+  {{- if hasKey $autoScaler "annotations" }}
+    annotations:
+    {{- range $key, $value := $autoScaler.annotations }}
+      {{ $key }}: {{ $value | quote }}
+    {{- end }}
+  {{- end }}
+spec:
+  maxReplicas: {{ $autoScaler.maxReplicas | default 10 }}
+  minReplicas: {{ $autoScaler.minReplicas | default 1 }}
+  scaleTargetRef:
+    {{- $autoScaler.scaleTargetRef | toYaml | nindent 4 }}
+  metrics:
+    {{-  $autoScaler.metrics | toYaml | nindent 4 }}
+---
+{{- end }}

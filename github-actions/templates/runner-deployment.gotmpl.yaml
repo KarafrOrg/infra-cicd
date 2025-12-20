@@ -1,0 +1,63 @@
+{{- range $actionRunner := index .Values "actions-runner-controller" "actionRunners" }}
+apiVersion: {{ $actionRunner.apiVersion | default "actions.summerwind.dev/v1alpha1" }}
+kind: RunnerDeployment
+metadata:
+  name: {{ $actionRunner.name }}
+  {{- if hasKey $actionRunner "labels" }}
+  labels:
+    {{- range $key, $value := $actionRunner.labels }}
+    {{ $key }}: {{ $value | quote }}
+    {{- end }}
+  {{- end }}
+  {{- if hasKey $actionRunner "annotations" }}
+  annotations:
+    {{- range $key, $value := $actionRunner.annotations }}
+    {{ $key }}: {{ $value | quote }}
+    {{- end }}
+  {{- end }}
+spec:
+  template:
+    spec:
+      {{- if hasKey $actionRunner "runnerLabels" }}
+      labels:
+        {{- $actionRunner.runnerLabels | toYaml | nindent 8 }}
+      {{- end }}
+      {{- if hasKey $actionRunner "organization" }}
+      organization: {{ $actionRunner.organization }}
+      {{- end }}
+      {{- if hasKey $actionRunner "runnerGroup" }}
+      group: {{ $actionRunner.runnerGroup }}
+      {{- end }}
+      resources: {{ $actionRunner.resources | toJson }}
+      containers:
+        - name: runner
+          resources: {{ $actionRunner.resources | toJson }}
+          securityContext:
+            capabilities:
+              drop:
+                - ALL
+              {{- if ne $actionRunner.ephemeral false }}
+              add:
+                - SYS_RESOURCE
+              {{- end }}
+          command:
+            - /bin/bash
+            - -c
+          args:
+            - |
+              /home/runner/config.sh \
+                --url "$GITHUB_URL$RUNNER_ORG" \
+                --token "$RUNNER_TOKEN" \
+                --labels "$RUNNER_LABELS" \
+                --runnergroup "$RUNNER_GROUP" \
+                --name "$RUNNER_NAME" \
+                --work "$RUNNER_WORKDIR" \
+                --runnerGroup "$RUNNER_GROUP" \
+                --unattended \
+                {{- if ne $actionRunner.ephemeral false }}
+                --ephemeral \
+                {{- end }}
+                --replace && \
+              /home/runner/run.sh
+---
+{{- end }}

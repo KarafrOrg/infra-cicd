@@ -1,0 +1,19 @@
+name: homelab-cicd-github-actions
+apiVersion: v2
+version: 0.1.0
+description: A Helm chart for deploying GitHub Actions runner in homelab
+type: application
+appVersion: "1.0.0"
+maintainers:
+  - name: KarafrOrg
+    email: karafra@karafra.net
+keywords:
+  - cicd
+  - github
+  - actions
+  - runner
+  - homelab
+dependencies:
+  - name: actions-runner-controller
+    version: 0.23.7
+    repository: https://actions-runner-controller.github.io/actions-runner-controller
