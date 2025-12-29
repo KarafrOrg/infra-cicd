@@ -28,10 +28,10 @@ spec:
       {{- if hasKey $actionRunner "runnerGroup" }}
       group: {{ $actionRunner.runnerGroup }}
       {{- end }}
-      resources: {{ $actionRunner.resources | toJson }}
+      resources: {{ $actionRunner.resources }}
       containers:
         - name: runner
-          resources: {{ $actionRunner.resources | toJson }}
+          resources: {{ $actionRunner.resources }}
           securityContext:
             capabilities:
               drop:
