@@ -13,6 +13,6 @@ spec:
             prefix: /
       route:
         - destination:
-            host: infra-cicd-github-actions-actions-runner-controller-webhook.infra-cicd.svc.cluster.local
+            host:  infra-cicd-github-actions-actions-runner-controller-github-webh.infra-cicd.svc.cluster.local
             port:
-              number: 443
+              number: 80
