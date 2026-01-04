@@ -27,23 +27,6 @@ actions-runner-controller:
       create: false
       name: github-actions-runner-controller-webhook-secret
       externalSecretKey: github-actions-runner-controller-webhook-secret
-    ingress:
-      enabled: false
-      annotations:
-        cert-manager.io/cluster-issuer: letsencrypt
-      ingressClassName: traefik
-      tls:
-        - hosts:
-            - webhook.gha.karafra.net
-          secretName: gha-webhook-tls
-      hosts:
-        - host: webhook.gha.karafra.net
-          paths:
-            - path: /
-              pathType: Prefix
-    service:
-      annotations:
-        cert-manager.io/cluster-issuer: letsencrypt
   actionsMetrics:
     serviceMonitor:
       enable: true
