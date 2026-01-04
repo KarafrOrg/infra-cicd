@@ -20,6 +20,6 @@ spec:
         - name: infra-cicd-github-actions-actions-runner-controller-webhook
           group: ''
           kind: Service
-          port: 80
+          port: 443
           weight: 1
 
