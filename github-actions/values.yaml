@@ -78,7 +78,7 @@ actions-runner-controller:
         kind: RunnerDeployment
         name: runner-deployment-ubuntu-24.04
       maxReplicas: 10
-      minReplicas: 1
+      minReplicas: 0
       metrics:
         - type: PercentageRunnersBusy
           scaleUpThreshold: '0.75'
