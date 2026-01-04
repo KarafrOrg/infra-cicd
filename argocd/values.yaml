@@ -1,0 +1,6 @@
+argocd:
+  dex:
+    github:
+      clientID: your_github_client_id
+      secretName: argocd-dex-github-client-secret
+      secretKey: clientSecret
