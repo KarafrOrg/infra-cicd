@@ -111,6 +111,7 @@ data:
       - type: github
         id: github
         name: GitHub
+        issuer: https://argocd.karafra.net/api/dex
         config:
           clientID: {{ .Values.argocd.dex.github.clientID }}
           clientSecret:
