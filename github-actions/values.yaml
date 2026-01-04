@@ -28,7 +28,7 @@ actions-runner-controller:
       name: github-actions-runner-controller-webhook-secret
       externalSecretKey: github-actions-runner-controller-webhook-secret
     ingress:
-      enabled: true
+      enabled: false
       annotations:
         cert-manager.io/cluster-issuer: letsencrypt
       ingressClassName: traefik
