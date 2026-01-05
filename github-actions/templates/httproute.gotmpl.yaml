@@ -17,7 +17,7 @@ spec:
             type: PathPrefix
             value: /
       backendRefs:
-        - name:  infra-cicd-github-actions-actions-runner-controller-github-webh
+        - name:  '{{ .Release.Name }}-actions-runner-controller-github-webhook-server'
           group: ''
           kind: Service
           port: 80
