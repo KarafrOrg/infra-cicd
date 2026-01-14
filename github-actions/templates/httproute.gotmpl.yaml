@@ -18,7 +18,7 @@ spec:
             value: /
       backendRefs:
         # infra-cicd-github-actions-actions-runner-controller-webhook
-        - name:  'infra-cicd-github-actions-actions-runner-controller-github-webh.infra-cicd.svc.cluster.local'
+        - name:  'infra-cicd-github-actions-actions-runner-controller-github-webh'
           group: ''
           kind: Service
           port: 80
