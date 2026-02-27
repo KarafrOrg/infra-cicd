@@ -41,6 +41,8 @@ spec:
             template: wait-pod
             arguments:
               parameters:
+                - name: item
+                  value: "{{`{{item}}`}}"
                 - name: deployment-namespace
                   value: "{{`{{workflow.parameters.deployment-namespace}}`}}"
             withParam: "{{`{{tasks.get-pods.outputs.result}}`}}"
