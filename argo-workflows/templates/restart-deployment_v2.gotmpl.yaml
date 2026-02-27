@@ -41,11 +41,10 @@ spec:
             template: list-pods
             arguments:
               parameters:
-                - name: deployment-name
-                  value: "{{`{{workflow.parameters.deployment-name}}`}}"
+                - name: deployment-selector
+                  value: "{{`{{tasks.get-selector.outputs.result}}`}}"
                 - name: deployment-namespace
                   value: "{{`{{workflow.parameters.deployment-namespace}}`}}"
-            withParam: "{{`{{tasks.get-selector.outputs.result}}`}}"
 
           - name: wait-each-pod
             dependencies: [ get-pods ]
