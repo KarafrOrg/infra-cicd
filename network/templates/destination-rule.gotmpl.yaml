@@ -1,0 +1,10 @@
+apiVersion: networking.istio.io/v1beta1
+kind: DestinationRule
+metadata:
+  name: dex-allow-plain
+  namespace: argocd
+spec:
+  host: argocd-dex-server.argocd.svc.cluster.local
+  trafficPolicy:
+    tls:
+      mode: DISABLE
