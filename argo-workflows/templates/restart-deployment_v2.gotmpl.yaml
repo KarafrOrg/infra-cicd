@@ -1,0 +1,79 @@
+apiVersion: argoproj.io/v1alpha1
+kind: WorkflowTemplate
+metadata:
+  name: restart-deployment-v2
+spec:
+  entrypoint: restart-dag
+  serviceAccountName: argo-workflows
+
+  arguments:
+    parameters:
+      - name: deployment-name
+      - name: deployment-namespace
+
+  templates:
+
+    - name: restart-dag
+      dag:
+        tasks:
+
+          - name: restart
+            template: restart-deployment
+
+          - name: get-pods
+            dependencies: [ restart ]
+            template: list-pods
+
+          - name: wait-each-pod
+            dependencies: [ get-pods ]
+            template: wait-pod
+            withParam: "{{`{{tasks.get-pods.outputs.result}}`}}"
+
+    - name: restart-deployment
+      inputs:
+        parameters:
+          - name: deployment-name
+          - name: deployment-namespace
+      container:
+        image: bitnami/kubectl:latest
+        command: [ "/bin/sh","-c" ]
+        # language=bash
+        args:
+          - |
+            set -eou pipefail
+            kubectl rollout restart deployment/{{`{{workflow.parameters.deployment-name}}`}} \
+              -n {{`{{workflow.parameters.deployment-namespace}}`}}
+
+    - name: list-pods
+      container:
+        image: bitnami/kubectl:latest
+        command: [ "/bin/sh","-c" ]
+        # language=bash
+        args:
+          - |
+            set -eou pipefail
+            kubectl get pods \
+              -n {{`{{workflow.parameters.deployment-namespace}}`}} \
+              -l app={{`{{workflow.parameters.deployment-name}}`}} \
+              -o jsonpath='{.items[*].metadata.name}' | \
+              tr ' ' '\n' | jq -R . | jq -s .
+      outputs:
+        result:
+
+    - name: wait-pod
+      inputs:
+        parameters:
+          - name: item
+      container:
+        image: bitnami/kubectl:latest
+        command: [ "/bin/sh","-c" ]
+        # language=bash
+        args:
+          - |
+            set -eou pipefail
+            POD={{`{{inputs.parameters.item}}`}}
+            echo "Waiting for $POD to become Ready..."
+            kubectl wait \
+              --for=condition=Ready pod/$POD \
+              -n {{`{{workflow.parameters.deployment-namespace}}`}} \
+              --timeout=5m
