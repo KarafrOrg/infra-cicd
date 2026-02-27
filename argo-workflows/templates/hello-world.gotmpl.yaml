@@ -4,6 +4,7 @@ metadata:
   name: hello-world-dag
 spec:
   entrypoint: hello-dag
+  serviceAccountName: argo-workflows
   templates:
     - name: hello-dag
       dag:
