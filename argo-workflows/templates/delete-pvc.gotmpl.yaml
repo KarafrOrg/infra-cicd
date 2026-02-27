@@ -8,8 +8,8 @@ spec:
 
   arguments:
     parameters:
-      - name: &pvcNameParam pvc-name
-      - name: &pvcNamespaceParam pvc-namespace
+      - name: pvc-name
+      - name: pvc-namespace
 
   templates:
     - name: pvc-delete-dag
@@ -27,12 +27,11 @@ spec:
     - name: kubectl-delete
       inputs:
         parameters:
-          - name: *pvcNameParam
-          - name: *pvcNamespaceParam
+          - name: pvc-name
+          - name: pvc-namespace
       container:
         image: bitnami/kubectl:latest
-        command: [ "/bin/sh", "-c" ]
-        # language=bash
+        command: ["/bin/sh", "-c"]
         args:
           - |
             echo "Deleting PVC {{`{{inputs.parameters.pvc-name}}`}} in namespace {{`{{inputs.parameters.pvc-namespace}}`}}"
