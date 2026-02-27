@@ -71,7 +71,7 @@ spec:
             set -eou pipefail
             kubectl get deployment {{`{{inputs.parameters.deployment-name}}`}} \
             -n {{`{{inputs.parameters.deployment-namespace}}`}} \
-            -o jsonpath='{range $k,$v := .spec.selector.matchLabels}{printf "%s=%s," $k $v}{end}' | sed 's/,$//'
+            -o json | jq -r '.spec.selector.matchLabels | to_entries | map("\(.key)=\(.value)") | join(",")'
 
     - name: restart-deployment
       inputs:
