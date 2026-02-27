@@ -44,7 +44,7 @@ edge-access:
         set_xauthrequest = true
         cookie_domains = ".karafra.net"
         whitelist_domains = [".karafra.net"]
-        cookie_name = "_oauth2_proxy_seaweed"
+        cookie_name = "_oauth2_proxy_argo_workflows"
         session_store_type = "cookie"
         email_domains = ["*"]
         scope = "user:email"
