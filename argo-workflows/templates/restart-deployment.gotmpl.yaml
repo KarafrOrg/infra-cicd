@@ -4,6 +4,7 @@ metadata:
   name: restart-deployment
 spec:
   entrypoint: restart-deployment
+  serviceAccountName: argo-workflows
   arguments:
     parameters:
       - name: deployment-name
