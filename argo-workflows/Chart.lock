@@ -1,0 +1,9 @@
+dependencies:
+- name: argo-workflows
+  repository: https://argoproj.github.io/argo-helm
+  version: 0.47.4
+- name: edge-access
+  repository: https://karafrorg.github.io/edge-access
+  version: 0.1.0
+digest: sha256:948a1c66a70beec0f90001bda0938156a7b142e87f9e1378d49db19e901e533b
+generated: "2026-02-27T16:31:11.498217+01:00"

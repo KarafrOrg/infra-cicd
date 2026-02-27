@@ -1,0 +1,20 @@
+argo-workflows:
+  crds:
+    keep: false
+edge-access:
+  httpRoute:
+    hostnames:
+      - argo-workflows.karafra.net
+    rules:
+      - matches:
+          - path:
+              type: PathPrefix
+              value: /
+        backendRefs:
+          - group: ""
+            kind: Service
+            name: argo-workflows
+            port: 8080
+            weight: 1
+  oauth2Proxy:
+    enabled: false

@@ -1,0 +1,23 @@
+name: homelab-cicd-github-actions
+apiVersion: v2
+version: 0.1.0
+description: A Helm chart for deploying Argo Workflows in a homelab environment, integrated with GitHub Actions for CI/CD.
+type: application
+appVersion: "1.0.0"
+maintainers:
+  - name: KarafrOrg
+    email: karafra@karafra.net
+keywords:
+  - cicd
+  - github
+  - actions
+  - runner
+  - homelab
+dependencies:
+  - name: argo-workflows
+    version: 0.47.4
+    repository: https://argoproj.github.io/argo-helm
+  - name: edge-access
+    version: 0.1.0
+    repository: https://karafrorg.github.io/edge-access
+
