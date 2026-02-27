@@ -7,11 +7,10 @@ argo-workflows:
     authModes:
       - sso
     sso:
-      insecureSkipVerify: true
       enabled: true
 
       # Dex issuer URL (internal cluster DNS)
-      issuer: https://argocd-dex-server.argocd.svc.cluster.local:5556/api/dex
+      issuer: https://argocd.karafra.net/api/dex
 
       clientId:
         name: github-app-credentials
