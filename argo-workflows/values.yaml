@@ -33,3 +33,7 @@ edge-access:
   oauth2-proxy:
     config:
       existingSecret: *configSecretName
+      configFile: |-
+        provider = "github"
+        github_org = "KarafrOrg"
+        cookie_secure = true
