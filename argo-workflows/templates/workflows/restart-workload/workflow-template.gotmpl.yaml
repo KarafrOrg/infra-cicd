@@ -11,6 +11,10 @@ spec:
       - name: &workloadNameParam workload-name
       - name: &workloadNamespaceParam workload-namespace
       - name: &workloadKindParam workload-kind
+        enum:
+          - deployment
+          - daemonset
+          - statefulset
       - name: &timeoutParam timeout
         value: "30m"
 
