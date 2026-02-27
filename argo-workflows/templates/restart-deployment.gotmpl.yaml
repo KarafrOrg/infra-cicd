@@ -3,24 +3,24 @@ kind: WorkflowTemplate
 metadata:
   name: restart-deployment
 spec:
-  entrypoint: argosay
+  entrypoint: restart-deployment
   arguments:
-    - name: deployment-name
-    - name: deployment-namespace
+    parameters:
+      - name: deployment-name
+      - name: deployment-namespace
+
   templates:
     - name: restart-deployment
       inputs:
         parameters:
           - name: deployment-name
-            value: '{{`workflow.parameters.message`}}'
           - name: deployment-namespace
-            value: '{{`workflow.parameters.message`}}'
       container:
         image: bitnami/kubectl:latest
-        command: [ "/bin/sh", "-c" ]
+        command: ["/bin/sh", "-c"]
         # language=bash
         args:
           - |
-            echo "Restarting Deployment {{`{{inputs.parameters.deploy-name}}`}} in namespace {{`{{inputs.parameters.deploy-namespace}}`}}"
-            kubectl rollout restart deployment/{{`{{inputs.parameters.deploy-name}}`}} -n {{`{{inputs.parameters.deploy-namespace}}`}}
-            echo "Deployment {{`{{inputs.parameters.deploy-name}}`}} restarted successfully"
+            echo "Restarting Deployment {{`{{inputs.parameters.deployment-name}}`}} in namespace {{`{{inputs.parameters.deployment-namespace}}`}}"
+            kubectl rollout restart deployment/{{`{{inputs.parameters.deployment-name}}`}} -n {{`{{inputs.parameters.deployment-namespace}}`}}
+            echo "Deployment {{`{{inputs.parameters.deployment-name}}`}} restarted successfully"
