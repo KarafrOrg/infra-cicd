@@ -2,6 +2,7 @@
 argo-workflows:
   crds:
     keep: false
+    full: true
 
   server:
     authModes:
