@@ -13,7 +13,7 @@ edge-access:
         backendRefs:
           - group: ""
             kind: Service
-            name: argo-workflows
+            name: infra-cicd-argo-workflows-server
             port: 8080
             weight: 1
   oauth2Proxy:
