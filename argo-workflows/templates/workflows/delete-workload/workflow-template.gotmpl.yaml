@@ -11,10 +11,6 @@ spec:
       - name: &workloadNameParam workload-name
       - name: &workloadNamespaceParam workload-namespace
       - name: &workloadKindParam workload-kind
-        enum:
-          - deployment
-          - daemonset
-          - statefulset
 
   templates:
     - name: delete-workload
