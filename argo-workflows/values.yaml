@@ -1,6 +1,20 @@
 argo-workflows:
   crds:
     keep: false
+  server:
+    sso:
+      enabled: true
+      issuer: https://github.com/login/oauth/authorize
+      clientId:
+        name: github-app-credential
+        key: clientId
+      clientSecret:
+        name: github-app-credential
+        key: clientSecret
+      redirectUrl: https://argo-workflows.karafra.net/oauth2/callback
+      scopes:
+        - read:user
+        - user:email
 edge-access:
   httpRoute:
     hostnames:
