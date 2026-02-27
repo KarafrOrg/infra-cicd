@@ -1,0 +1,21 @@
+apiVersion: argoproj.io/v1alpha1
+kind: WorkflowEventBinding
+metadata:
+  name: delete-workload-event-binding
+spec:
+  event:
+    selector: payload.action == "delete_workload"
+  submit:
+    workflowTemplateRef:
+      name: restart-workload
+    arguments:
+      parameters:
+        - name: workload-name
+          valueFrom:
+            event: payload.workload_name
+        - name: workload-namespace
+          valueFrom:
+            event: payload.workload_namespace
+        - name: workload-kind
+          valueFrom:
+            event: payload.workload_kind

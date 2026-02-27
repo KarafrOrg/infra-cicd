@@ -1,0 +1,48 @@
+apiVersion: argoproj.io/v1alpha1
+kind: WorkflowTemplate
+metadata:
+  name: restart-workload
+spec:
+  entrypoint: restart-workload
+  serviceAccountName: argo-workflows
+
+  arguments:
+    parameters:
+      - name: &workloadNameParam workload-name
+      - name: &workloadNamespaceParam workload-namespace
+      - name: &workloadKindParam workload-kind
+        enum:
+          - deployment
+          - daemonset
+          - statefulset
+      - name: &timeoutParam timeout
+        value: "30m"
+
+  templates:
+    - name: restart-workload
+      inputs:
+        parameters:
+          - name: *workloadNameParam
+          - name: *workloadNamespaceParam
+          - name: *workloadKindParam
+          - name: *timeoutParam
+      container:
+        image: bitnami/kubectl:latest
+        # language=bash
+        command: [ "/bin/sh", "-c" ]
+        # language=bash
+        args:
+          - |
+            set -eou pipefail
+            echo "Restarting {{`{{inputs.parameters.workload-kind}}`}} {{`{{inputs.parameters.workload-name}}`}} in namespace {{`{{inputs.parameters.workload-namespace}}`}}"
+
+            kubectl rollout restart {{`{{inputs.parameters.workload-kind}}`}}/{{`{{inputs.parameters.workload-name}}`}} \
+              -n {{`{{inputs.parameters.workload-namespace}}`}}
+
+            echo "Waiting for rollout to complete (timeout {{`{{inputs.parameters.timeout}}`}})..."
+
+            kubectl rollout status {{`{{inputs.parameters.workload-kind}}`}}/{{`{{inputs.parameters.workload-name}}`}} \
+              -n {{`{{inputs.parameters.workload-namespace}}`}} \
+              --timeout={{`{{inputs.parameters.timeout}}`}}
+
+            echo "{{`{{inputs.parameters.workload-kind}}`}} {{`{{inputs.parameters.workload-name}}`}} successfully restarted"
