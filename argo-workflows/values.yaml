@@ -33,6 +33,7 @@ edge-access:
   oauth2-proxy:
     config:
       existingSecret: *configSecretName
+      # language=cfg
       configFile: |-
         provider = "github"
         skip_provider_button = true
@@ -41,15 +42,9 @@ edge-access:
         upstreams = ["http://infra-cicd-argo-workflows-server.infra-cicd.svc.cluster.local:80"]
         pass_host_header = true
         set_xauthrequest = true
-        cookie_domain = ".karafra.net"
+        cookie_domains = ".karafra.net"
         whitelist_domains = [".karafra.net"]
         cookie_name = "_oauth2_proxy_seaweed"
         session_store_type = "cookie"
-
-        # ⚠️ Required to avoid "missing email-domain" error
         email_domains = ["*"]
-
-        # GitHub OAuth
-        client_id = "<YOUR_GITHUB_CLIENT_ID>"
-        client_secret = "<YOUR_GITHUB_CLIENT_SECRET>"
         scope = "user:email"
