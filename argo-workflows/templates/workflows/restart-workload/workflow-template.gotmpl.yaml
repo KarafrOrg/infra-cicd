@@ -32,7 +32,7 @@ spec:
         # language=bash
         args:
           - |
-
+            set -eou pipefail
             echo "Restarting {{`{{inputs.parameters.workload-kind}}`}} {{`{{inputs.parameters.workload-name}}`}} in namespace {{`{{inputs.parameters.workload-namespace}}`}}"
 
             kubectl rollout restart {{`{inputs.parameters.workload-kind}`}}/{{`{{inputs.parameters.workload-name}}`}} \
