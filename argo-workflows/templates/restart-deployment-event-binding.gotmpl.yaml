@@ -1,0 +1,19 @@
+apiVersion: argoproj.io/v1alpha1
+kind: WorkflowEventBinding
+metadata:
+  name: restart-deployment-event-binding
+spec:
+  event:
+    # Webhook event selector
+    selector: payload.action == "restart_deployment"
+  submit:
+    workflowTemplateRef:
+      name: restart-deployment-v2
+    arguments:
+      parameters:
+        - name: deployment-name
+          valueFrom:
+            event: payload.deployment_name
+        - name: deployment-namespace
+          valueFrom:
+            event: payload.deployment_namespace
