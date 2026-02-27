@@ -1,0 +1,27 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Workflow
+metadata:
+  generateName: hello-world-dag-
+spec:
+  entrypoint: hello-dag
+  templates:
+    - name: hello-dag
+      dag:
+        tasks:
+          - name: say-hello
+            template: hello
+          - name: say-world
+            template: world
+            dependencies: [ say-hello ]
+
+    - name: hello
+      container:
+        image: alpine:3.18
+        command: [ echo ]
+        args: [ "Hello" ]
+
+    - name: world
+      container:
+        image: alpine:3.18
+        command: [ echo ]
+        args: [ "World!" ]
