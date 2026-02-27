@@ -26,8 +26,18 @@ spec:
                 - name: deployment-namespace
                   value: "{{`{{workflow.parameters.deployment-namespace}}`}}"
 
-          - name: get-pods
+          - name: get-selector
             dependencies: [ restart ]
+            template: get-selector
+            arguments:
+              parameters:
+                - name: deployment-name
+                  value: "{{`{{workflow.parameters.deployment-name}}`}}"
+                - name: deployment-namespace
+                  value: "{{`{{workflow.parameters.deployment-namespace}}`}}"
+
+          - name: get-pods
+            dependencies: [ get-selector ]
             template: list-pods
             arguments:
               parameters:
@@ -35,6 +45,7 @@ spec:
                   value: "{{`{{workflow.parameters.deployment-name}}`}}"
                 - name: deployment-namespace
                   value: "{{`{{workflow.parameters.deployment-namespace}}`}}"
+            withParam: "{{`{{tasks.get-selector.outputs.result}}`}}"
 
           - name: wait-each-pod
             dependencies: [ get-pods ]
@@ -46,6 +57,22 @@ spec:
                 - name: deployment-namespace
                   value: "{{`{{workflow.parameters.deployment-namespace}}`}}"
             withParam: "{{`{{tasks.get-pods.outputs.result}}`}}"
+
+    - name: get-selector
+      inputs:
+        - parameters:
+            - name: deployment-name
+            - name: deployment-namespace
+      container:
+        image: bitnami/kubectl:latest
+        command: [ "/bin/sh","-c" ]
+        # language=bash
+        args:
+          - |
+            set -eou pipefail
+            kubectl get deployment "$DEPLOYMENT" \
+            -n {{`{{inputs.parameters.deployment-namespace}}`}} \
+            -o jsonpath='{range $k,$v := .spec.selector.matchLabels}{printf "%s=%s," $k $v}{end}' | sed 's/,$//'
 
     - name: restart-deployment
       inputs:
@@ -66,7 +93,7 @@ spec:
     - name: list-pods
       inputs:
         parameters:
-          - name: deployment-name
+          - name: deployment-selector
           - name: deployment-namespace
       container:
         image: bitnami/kubectl:latest
@@ -77,7 +104,7 @@ spec:
             set -eou pipefail
             kubectl get pods \
               -n {{`{{inputs.parameters.deployment-namespace}}`}} \
-              -l app={{`{{inputs.parameters.deployment-name}}`}} \
+              -l {{`{{inputs.parameters.deployment-selector}}`}} \
               -o jsonpath='{.items[*].metadata.name}' | \
               tr ' ' '\n' | jq -R . | jq -s .
 
