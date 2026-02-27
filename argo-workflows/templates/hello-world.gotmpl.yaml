@@ -26,3 +26,12 @@ spec:
         image: alpine:3.18
         command: [ echo ]
         args: [ "World!" ]
+
+      container:
+        image: bitnami/kubectl:latest
+        command: [ "/bin/sh", "-c" ]
+        args:
+          - |
+            echo "Restarting Deployment {{`{{inputs.parameters.deploy-name}}`}} in namespace {{`{{inputs.parameters.deploy-namespace}}`}}"
+            kubectl rollout restart deployment/{{`{{inputs.parameters.deploy-name}}`}} -n {{`{{inputs.parameters.deploy-namespace}}`}}
+            echo "Deployment {{`{{inputs.parameters.deploy-name}}`}} restarted successfully"

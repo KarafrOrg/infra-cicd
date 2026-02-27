@@ -1,37 +1,24 @@
 apiVersion: argoproj.io/v1alpha1
-kind: Workflow
+kind: WorkflowTemplate
 metadata:
   name: restart-deployment
 spec:
-  entrypoint: deployment-restart-dag
-  serviceAccountName: argo-workflow
-
+  entrypoint: argosay
   arguments:
-    parameters:
-      - name: deploy-name
-      - name: deploy-namespace
-
+    - name: deployment-name
+    - name: deployment-namespace
   templates:
-    - name: deployment-restart-dag
-      dag:
-        tasks:
-          - name: restart-my-deployment
-            template: kubectl-restart
-            arguments:
-              parameters:
-                - name: deploy-name
-                  value: "{{`{{workflow.parameters.deploy-name}}`}}"
-                - name: deploy-namespace
-                  value: "{{`{{workflow.parameters.deploy-namespace}}`}}"
-
-    - name: kubectl-restart
+    - name: restart-deployment
       inputs:
         parameters:
-          - name: deploy-name
-          - name: deploy-namespace
+          - name: deployment-name
+            value: '{{`workflow.parameters.message`}}'
+          - name: deployment-namespace
+            value: '{{`workflow.parameters.message`}}'
       container:
         image: bitnami/kubectl:latest
         command: [ "/bin/sh", "-c" ]
+        # language=bash
         args:
           - |
             echo "Restarting Deployment {{`{{inputs.parameters.deploy-name}}`}} in namespace {{`{{inputs.parameters.deploy-namespace}}`}}"
