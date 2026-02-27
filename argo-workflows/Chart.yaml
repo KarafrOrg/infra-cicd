@@ -1,4 +1,4 @@
-name: homelab-cicd-github-actions
+name: homelab-cicd-argo-workflows
 apiVersion: v2
 version: 0.1.0
 description: A Helm chart for deploying Argo Workflows in a homelab environment, integrated with GitHub Actions for CI/CD.
