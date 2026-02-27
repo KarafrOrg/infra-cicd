@@ -37,3 +37,5 @@ edge-access:
         provider = "github"
         github_org = "KarafrOrg"
         cookie_secure = true
+    extraArgs:
+      email-domain: "*"
