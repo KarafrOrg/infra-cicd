@@ -1,0 +1,24 @@
+apiVersion: argoproj.io/v1alpha1
+kind: WorkflowEventBinding
+metadata:
+  name: restart-workload-event-binding
+spec:
+  event:
+    selector: payload.action == "restart_workload"
+  submit:
+    workflowTemplateRef:
+      name: restart-workload
+    arguments:
+      parameters:
+        - name: workload-name
+          valueFrom:
+            event: payload.workload_name
+        - name: workload-namespace
+          valueFrom:
+            event: payload.workload_namespace
+        - name: workload-kind
+          valueFrom:
+            event: payload.workload_kind
+        - name: timeout
+          valueFrom:
+            event: payload.timeout
