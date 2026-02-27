@@ -6,6 +6,8 @@ argo-workflows:
   server:
     authModes:
       - sso
+      - server
+
     sso:
       enabled: true
 
