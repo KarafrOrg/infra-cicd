@@ -57,9 +57,7 @@ spec:
               -l app={{`{{workflow.parameters.deployment-name}}`}} \
               -o jsonpath='{.items[*].metadata.name}' | \
               tr ' ' '\n' | jq -R . | jq -s .
-      outputs:
-        result:
-
+      
     - name: wait-pod
       inputs:
         parameters:
