@@ -47,4 +47,4 @@ edge-access:
         cookie_name = "_oauth2_proxy_argo_workflows"
         session_store_type = "cookie"
         email_domains = ["*"]
-        scope = "user:email"
+        scope = "user:email read:org"
