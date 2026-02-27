@@ -1,24 +1,24 @@
 apiVersion: argoproj.io/v1alpha1
 kind: WorkflowTemplate
 metadata:
-  name: delete-workload
+  name: delete-resource
 spec:
-  entrypoint: delete-workload
+  entrypoint: delete-resource
   serviceAccountName: argo-workflows
 
   arguments:
     parameters:
-      - name: &workloadNameParam workload-name
-      - name: &workloadNamespaceParam workload-namespace
-      - name: &workloadKindParam workload-kind
+      - name: &resourceNameParam resource-name
+      - name: &resourceNamespaceParam resource-namespace
+      - name: &resourceKindParam resource-kind
 
   templates:
-    - name: delete-workload
+    - name: delete-resource
       inputs:
         parameters:
-          - name: *workloadNameParam
-          - name: *workloadNamespaceParam
-          - name: *workloadKindParam
+          - name: *resourceNameParam
+          - name: *resourceNamespaceParam
+          - name: *resourceKindParam
       container:
         image: bitnami/kubectl:latest
         # language=bash
@@ -27,7 +27,7 @@ spec:
         args:
           - |
             set -eou pipefail
-            echo "Deleting {{`{{inputs.parameters.workload-kind}}`}} {{`{{inputs.parameters.workload-name}}`}} in namespace {{`{{inputs.parameters.workload-namespace}}`}}"
+            echo "Deleting {{`{{inputs.parameters.resource-kind}}`}} {{`{{inputs.parameters.resource-name}}`}} in namespace {{`{{inputs.parameters.resource-namespace}}`}}"
 
-            kubectl delete {{`{{inputs.parameters.workload-kind}}`}}/{{`{{inputs.parameters.workload-name}}`}} \
-              -n {{`{{inputs.parameters.workload-namespace}}`}}
+            kubectl delete {{`{{inputs.parameters.resource-kind}}`}}/{{`{{inputs.parameters.resource-name}}`}} \
+              -n {{`{{inputs.parameters.resource-namespace}}`}}

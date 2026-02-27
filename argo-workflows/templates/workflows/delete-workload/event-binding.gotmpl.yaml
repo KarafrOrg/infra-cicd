@@ -1,21 +1,21 @@
 apiVersion: argoproj.io/v1alpha1
 kind: WorkflowEventBinding
 metadata:
-  name: delete-workload-event-binding
+  name: delete-resource-event-binding
 spec:
   event:
-    selector: payload.action == "delete_workload"
+    selector: payload.action == "delete_resource"
   submit:
     workflowTemplateRef:
-      name: delete-workload
+      name: delete-resource
     arguments:
       parameters:
-        - name: workload-name
+        - name: resource-name
           valueFrom:
-            event: payload.workload_name
-        - name: workload-namespace
+            event: payload.resource_name
+        - name: resource-namespace
           valueFrom:
-            event: payload.workload_namespace
-        - name: workload-kind
+            event: payload.resource_namespace
+        - name: resource-kind
           valueFrom:
-            event: payload.workload_kind
+            event: payload.resource_kind
