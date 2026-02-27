@@ -19,14 +19,30 @@ spec:
 
           - name: restart
             template: restart-deployment
+            arguments:
+              parameters:
+                - name: deployment-name
+                  value: "{{`{{workflow.parameters.deployment-name}}`}}"
+                - name: deployment-namespace
+                  value: "{{`{{workflow.parameters.deployment-namespace}}`}}"
 
           - name: get-pods
             dependencies: [ restart ]
             template: list-pods
+            arguments:
+              parameters:
+                - name: deployment-name
+                  value: "{{`{{workflow.parameters.deployment-name}}`}}"
+                - name: deployment-namespace
+                  value: "{{`{{workflow.parameters.deployment-namespace}}`}}"
 
           - name: wait-each-pod
             dependencies: [ get-pods ]
             template: wait-pod
+            arguments:
+              parameters:
+                - name: deployment-namespace
+                  value: "{{`{{workflow.parameters.deployment-namespace}}`}}"
             withParam: "{{`{{tasks.get-pods.outputs.result}}`}}"
 
     - name: restart-deployment
@@ -41,10 +57,15 @@ spec:
         args:
           - |
             set -eou pipefail
-            kubectl rollout restart deployment/{{`{{workflow.parameters.deployment-name}}`}} \
-              -n {{`{{workflow.parameters.deployment-namespace}}`}}
+            echo "Restarting deployment {{`{{inputs.parameters.deployment-name}}`}}"
+            kubectl rollout restart deployment/{{`{{inputs.parameters.deployment-name}}`}} \
+              -n {{`{{inputs.parameters.deployment-namespace}}`}}
 
     - name: list-pods
+      inputs:
+        parameters:
+          - name: deployment-name
+          - name: deployment-namespace
       container:
         image: bitnami/kubectl:latest
         command: [ "/bin/sh","-c" ]
@@ -53,15 +74,16 @@ spec:
           - |
             set -eou pipefail
             kubectl get pods \
-              -n {{`{{workflow.parameters.deployment-namespace}}`}} \
-              -l app={{`{{workflow.parameters.deployment-name}}`}} \
+              -n {{`{{inputs.parameters.deployment-namespace}}`}} \
+              -l app={{`{{inputs.parameters.deployment-name}}`}} \
               -o jsonpath='{.items[*].metadata.name}' | \
               tr ' ' '\n' | jq -R . | jq -s .
-      
+
     - name: wait-pod
       inputs:
         parameters:
           - name: item
+          - name: deployment-namespace
       container:
         image: bitnami/kubectl:latest
         command: [ "/bin/sh","-c" ]
@@ -73,5 +95,5 @@ spec:
             echo "Waiting for $POD to become Ready..."
             kubectl wait \
               --for=condition=Ready pod/$POD \
-              -n {{`{{workflow.parameters.deployment-namespace}}`}} \
+              -n {{`{{inputs.parameters.deployment-namespace}}`}} \
               --timeout=5m
