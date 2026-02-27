@@ -1,0 +1,40 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Workflow
+metadata:
+  name: delete-pvc
+spec:
+  entrypoint: pvc-delete-dag
+  serviceAccountName: argo-workflow
+
+  arguments:
+    parameters:
+      - name: &pvcNameParam pvc-name
+      - name: &pvcNamespaceParam pvc-namespace
+
+  templates:
+    - name: pvc-delete-dag
+      dag:
+        tasks:
+          - name: delete-my-pvc
+            template: kubectl-delete
+            arguments:
+              parameters:
+                - name: pvc-name
+                  value: "{{`{{workflow.parameters.pvc-name}}`}}"
+                - name: pvc-namespace
+                  value: "{{`{{workflow.parameters.pvc-namespace}}`}}"
+
+    - name: kubectl-delete
+      inputs:
+        parameters:
+          - name: *pvcNameParam
+          - name: *pvcNamespaceParam
+      container:
+        image: bitnami/kubectl:latest
+        command: [ "/bin/sh", "-c" ]
+        # language=bash
+        args:
+          - |
+            echo "Deleting PVC {{`{{inputs.parameters.pvc-name}}`}} in namespace {{`{{inputs.parameters.pvc-namespace}}`}}"
+            kubectl delete pvc {{`{{inputs.parameters.pvc-name}}`}} -n {{`{{inputs.parameters.pvc-namespace}}`}}
+            echo "PVC {{`{{inputs.parameters.pvc-name}}`}} deleted successfully"
