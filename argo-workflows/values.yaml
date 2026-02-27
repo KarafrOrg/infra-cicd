@@ -3,14 +3,17 @@ argo-workflows:
   crds:
     keep: false
     full: true
-
   server:
     authModes:
       - server
     sso:
       enabled: false
-
-
+  workflow:
+    serviceAccount:
+      create: true
+      name: argo-workflows
+    rbac:
+      create: true
 edge-access:
   httpRoute:
     hostnames:
