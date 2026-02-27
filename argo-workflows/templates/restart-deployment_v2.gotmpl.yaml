@@ -60,9 +60,9 @@ spec:
 
     - name: get-selector
       inputs:
-        - parameters:
-            - name: deployment-name
-            - name: deployment-namespace
+        parameters:
+          - name: deployment-name
+          - name: deployment-namespace
       container:
         image: bitnami/kubectl:latest
         command: [ "/bin/sh","-c" ]
@@ -70,7 +70,7 @@ spec:
         args:
           - |
             set -eou pipefail
-            kubectl get deployment "$DEPLOYMENT" \
+            kubectl get deployment {{`{{inputs.parameters.deployment-name}}`}} \
             -n {{`{{inputs.parameters.deployment-namespace}}`}} \
             -o jsonpath='{range $k,$v := .spec.selector.matchLabels}{printf "%s=%s," $k $v}{end}' | sed 's/,$//'
 
