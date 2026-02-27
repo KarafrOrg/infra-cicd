@@ -7,7 +7,7 @@ spec:
     selector: payload.action == "delete_workload"
   submit:
     workflowTemplateRef:
-      name: restart-workload
+      name: delete-workload
     arguments:
       parameters:
         - name: workload-name
