@@ -44,4 +44,4 @@ spec:
               -n {{`{{inputs.parameters.workload-namespace}}`}} \
               --timeout={{`{{inputs.parameters.timeout}}`}}
 
-            echo "{{`{input.parameters.workload-kind}`}} {{`{{inputs.parameters.deployment-name}}`}} successfully restarted"
+            echo "{{`{input.parameters.workload-kind}`}} {{`{{inputs.parameters.workload-name}}`}} successfully restarted"
