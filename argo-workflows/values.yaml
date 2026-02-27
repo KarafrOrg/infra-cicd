@@ -11,7 +11,7 @@ argo-workflows:
       enabled: true
 
       # Dex issuer URL (internal cluster DNS)
-      issuer: https://argocd-dex-server.argocd.svc.cluster.local:5556
+      issuer: https://argocd-dex-server.argocd.svc.cluster.local:5556/api/dex
 
       clientId:
         name: github-app-credentials
