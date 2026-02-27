@@ -5,30 +5,10 @@ argo-workflows:
 
   server:
     authModes:
-      - sso
       - server
-
     sso:
-      enabled: true
+      enabled: false
 
-      # Dex issuer URL (internal cluster DNS)
-      issuer: https://argocd.karafra.net/api/dex
-
-      clientId:
-        name: github-app-credentials
-        key: argoWorkflowsClientId
-      clientSecret:
-        name: github-app-credentials
-        key: argoWorkflowsClientSecret
-
-      # Public URL users access
-      redirectUrl: https://argo-workflows.karafra.net/oauth2/callback
-
-      # Standard OIDC scopes for login
-      scopes:
-        - openid
-        - email
-        - profile
 
 # Optional: configure Ingress / Edge access (Istio HTTPRoute)
 edge-access:
@@ -47,4 +27,6 @@ edge-access:
             port: 2746
             weight: 1
   oauth2Proxy:
-    enabled: false
+    externalSecret:
+      secretName: argo-workflows-oauth2
+      externalSecretKey: argo-workflows-oauth2-config
