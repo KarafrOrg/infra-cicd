@@ -28,5 +28,8 @@ edge-access:
             weight: 1
   oauth2Proxy:
     externalSecret:
-      secretName: argo-workflows-oauth2
+      secretName: &configSecretName argo-workflows-oauth2
       externalSecretKey: argo-workflows-oauth2-config
+  oauth2-proxy:
+    config:
+      existingSecret: *configSecretName
