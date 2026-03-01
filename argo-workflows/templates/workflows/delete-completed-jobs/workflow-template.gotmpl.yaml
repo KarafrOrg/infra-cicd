@@ -32,10 +32,7 @@ spec:
               -o json | \
             jq -c '[
               .items[] | select(
-                any(.status.containerStatuses[]?; \
-                  .state.terminated.finishedAt? as $t | \
-                  (now - ($t | fromdateiso8601)) > {{`{{workflow.parameters.delete-pods-older-than}}`}}
-                )
+                (.status.containerStatuses[]?.state.terminated.finishedAt | fromdateiso8601) < (now - {{`{{workflow.parameters.delete-pods-older-than}}`}})
               ) | {name: .metadata.name, namespace: .metadata.namespace}
             ]' > /tmp/old-pods.json
 
@@ -46,6 +43,7 @@ spec:
           - name: pod-namespace
       container:
         image: bitnami/kubectl:latest
+        # language=bash
         # language=bash
         command: [ "/bin/sh", "-c" ]
         # language=bash
