@@ -5,7 +5,8 @@ metadata:
 spec:
   entrypoint: delete-old-pods
   serviceAccountName: argo-workflows
-
+  ttlStrategy:
+    secondsAfterCompletion: 10
   arguments:
     parameters:
       - name: delete-pods-older-than
