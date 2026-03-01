@@ -20,7 +20,6 @@ spec:
               path: /tmp/old-pods.json
       container:
         image: bitnami/kubectl:latest
-        # language=bash
         command: [ "/bin/sh", "-c" ]
         # language=bash
         args:
@@ -45,13 +44,14 @@ spec:
         image: bitnami/kubectl:latest
         # language=bash
         # language=bash
+        # language=bash
         command: [ "/bin/sh", "-c" ]
         # language=bash
         args:
           - |
             set -eou pipefail
             echo "Deleting pod {{`{{inputs.parameters.pod-name}}`}} in namespace {{`{{inputs.parameters.pod-namespace}}`}}"
-            kubectl delete pod {{`{{inputs.parameters.pod-name}}`}} -n {{`{{inputs.parameters.pod-namespace}}`}}
+            kubectl delete pod {{`{{inputs.parameters.pod-name}}`}} -n {{`{{inputs.parameters.pod-namespace}}`}} || echo "Pod {{`{{inputs.parameters.pod-name}}`}} not found, skipping."
 
     - name: delete-old-pods
       steps:
