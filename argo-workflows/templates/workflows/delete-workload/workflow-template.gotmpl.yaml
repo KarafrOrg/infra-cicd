@@ -6,16 +6,19 @@ spec:
   entrypoint: delete-resource
   serviceAccountName: argo-workflows
 
-  arguments: &arguments
+  arguments:
     parameters:
-      - name: resource-name
-      - name: resource-namespace
-      - name: resource-kind
+      - name: &resourceNameParam resource-name
+      - name: &resourceNamespaceParam resource-namespace
+      - name: &resourceKindParam resource-kind
 
   templates:
     - name: delete-resource
       inputs:
-        <<: *arguments
+        parameters:
+          - name: *resourceNameParam
+          - name: *resourceNamespaceParam
+          - name: *resourceKindParam
       container:
         image: bitnami/kubectl:latest
         # language=bash

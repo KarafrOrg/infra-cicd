@@ -6,17 +6,21 @@ spec:
   entrypoint: restart-workload
   serviceAccountName: argo-workflows
   arguments:
-    parameters: &parameters
-      - name: workload-name
-      - name: workload-namespace
-      - name: workload-kind
-      - name: timeout
+    parameters:
+      - name: &workloadNameParam workload-name
+      - name: &workloadNamespaceParam workload-namespace
+      - name: &workloadKindParam workload-kind
+      - name: &timeoutParam timeout
         value: "30m"
 
   templates:
     - name: restart-workload
       inputs:
-        <<: *parameters
+        parameters:
+          - name: *workloadNameParam
+          - name: *workloadNamespaceParam
+          - name: *workloadKindParam
+          - name: *timeoutParam
       container:
         image: bitnami/kubectl:latest
         # language=bash
@@ -37,17 +41,3 @@ spec:
               --timeout={{`{{inputs.parameters.timeout}}`}}
 
             echo "{{`{{inputs.parameters.workload-kind}}`}} {{`{{inputs.parameters.workload-name}}`}} successfully restarted"
-    - name: &exitHandler notify
-      inputs:
-        parameters:
-          - name: message
-      container:
-        image: alpine:latest
-        command: [ "/bin/sh", "-c" ]
-        # language=bash
-        args:
-          - |
-            set -eou pipefail
-            echo "{{`{{inputs.parameters.message}}`}}"
-
-  onExit: *exitHandler
