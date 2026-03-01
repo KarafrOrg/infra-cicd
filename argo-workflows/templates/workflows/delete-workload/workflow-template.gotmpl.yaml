@@ -6,19 +6,16 @@ spec:
   entrypoint: delete-resource
   serviceAccountName: argo-workflows
 
-  arguments:
+  arguments: &arguments
     parameters:
-      - name: &resourceNameParam resource-name
-      - name: &resourceNamespaceParam resource-namespace
-      - name: &resourceKindParam resource-kind
+      - name: resource-name
+      - name: resource-namespace
+      - name: resource-kind
 
   templates:
     - name: delete-resource
       inputs:
-        parameters:
-          - name: *resourceNameParam
-          - name: *resourceNamespaceParam
-          - name: *resourceKindParam
+        <<: *arguments
       container:
         image: bitnami/kubectl:latest
         # language=bash
@@ -28,6 +25,5 @@ spec:
           - |
             set -eou pipefail
             echo "Deleting {{`{{inputs.parameters.resource-kind}}`}} {{`{{inputs.parameters.resource-name}}`}} in namespace {{`{{inputs.parameters.resource-namespace}}`}}"
-
-            kubectl delete {{`{{inputs.parameters.resource-kind}}`}}/{{`{{inputs.parameters.resource-name}}`}} \
-              -n {{`{{inputs.parameters.resource-namespace}}`}}
+            kubectl delete {{`{{inputs.parameters.resource-kind}}`}}/{{`{{inputs.parameters.resource-name}}`}} -n {{`{{inputs.parameters.resource-namespace}}`}}
+            echo "{{`{{inputs.parameters.resource-kind}}`}} {{`{{inputs.parameters.resource-name}}`}} successfully deleted"

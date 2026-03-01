@@ -1,0 +1,70 @@
+apiVersion: argoproj.io/v1alpha1
+kind: ClusterWorkflowTemplate
+metadata:
+  name: delete-old-pods
+spec:
+  entrypoint: delete-old-pods
+  serviceAccountName: argo-workflows
+
+  arguments:
+    parameters:
+      - name: delete-pods-older-than
+        value: "3600" # 1 hour in seconds
+
+  templates:
+    - name: get-old-pods
+      outputs:
+        parameters:
+          - name: old-pods
+            valueFrom:
+              path: /tmp/old-pods.json
+      container:
+        image: bitnami/kubectl:latest
+        # language=bash
+        command: [ "/bin/sh", "-c" ]
+        # language=bash
+        args:
+          - |
+            set -eou pipefail
+            echo 'Getting completed pods older than the specified time'
+            kubectl get pods -A \
+              --field-selector=status.phase=Succeeded \
+              -o json | \
+            jq -c '[
+              .items[] | select(
+                any(.status.containerStatuses[]?; \
+                  .state.terminated.finishedAt? as $t | \
+                  (now - ($t | fromdateiso8601)) > {{`{{workflow.parameters.delete-pods-older-than}}`}}
+                )
+              ) | {name: .metadata.name, namespace: .metadata.namespace}
+            ]' > /tmp/old-pods.json
+
+    - name: delete-pod
+      inputs:
+        parameters:
+          - name: pod-name
+          - name: pod-namespace
+      container:
+        image: bitnami/kubectl:latest
+        # language=bash
+        command: [ "/bin/sh", "-c" ]
+        # language=bash
+        args:
+          - |
+            set -eou pipefail
+            echo "Deleting pod {{`{{inputs.parameters.pod-name}}`}} in namespace {{`{{inputs.parameters.pod-namespace}}`}}"
+            kubectl delete pod {{`{{inputs.parameters.pod-name}}`}} -n {{`{{inputs.parameters.pod-namespace}}`}}
+
+    - name: delete-old-pods
+      steps:
+        - - name: get-old-pods
+            template: get-old-pods
+        - - name: delete-each-pod
+            template: delete-pod
+            arguments:
+              parameters:
+                - name: pod-name
+                  value: "{{`{{item.name}}`}}"
+                - name: pod-namespace
+                  value: "{{`{{item.namespace}}`}}"
+            withParam: "{{`{{steps.get-old-pods.outputs.parameters.old-pods}}`}}"
