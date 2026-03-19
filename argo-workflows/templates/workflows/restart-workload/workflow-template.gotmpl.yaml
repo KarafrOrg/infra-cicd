@@ -5,6 +5,9 @@ metadata:
 spec:
   entrypoint: restart-workload
   serviceAccountName: argo-workflows
+  ttlStrategy:
+    secondsAfterSuccess: 10
+    secondsAfterFailure: 3600
   arguments:
     parameters:
       - name: &workloadNameParam workload-name
@@ -12,7 +15,6 @@ spec:
       - name: &workloadKindParam workload-kind
       - name: &timeoutParam timeout
         value: "30m"
-
   templates:
     - name: restart-workload
       inputs:

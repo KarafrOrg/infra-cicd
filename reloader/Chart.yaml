@@ -1,0 +1,17 @@
+name: homelab-cicd-reloader
+apiVersion: v2
+version: 0.1.0
+description: A Helm chart for deploying reloader controller in homelab
+type: application
+appVersion: "1.0.0"
+maintainers:
+  - name: KarafrOrg
+    email: karafra@karafra.net
+keywords:
+  - cicd
+  - reloader
+  - homelab
+dependencies:
+  - name: reloader
+    version: 2.2.9
+    repository: https://stakater.github.io/stakater-charts

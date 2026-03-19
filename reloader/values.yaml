@@ -1,0 +1,29 @@
+reloader:
+  reloader:
+    enableHA: true
+    enableMetricsByNamespace: true
+    deployment:
+      replicas: 3
+      resources:
+        limits:
+          cpu: 100m
+          memory: 128Mi
+        requests:
+          cpu: 100m
+          memory: 128Mi
+      livenessProbe:
+        timeoutSeconds: 5
+        failureThreshold: 5
+        periodSeconds: 10
+        successThreshold: 1
+      readinessProbe:
+        timeoutSeconds: 15
+        failureThreshold: 5
+        periodSeconds: 10
+        successThreshold: 1
+    serviceMonitor:
+      enabled: true
+      namespace: infra-cicd
+    podMonitor:
+      enabled: true
+      namespace: infra-cicd

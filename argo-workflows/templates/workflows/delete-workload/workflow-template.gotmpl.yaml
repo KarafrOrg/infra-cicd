@@ -5,7 +5,9 @@ metadata:
 spec:
   entrypoint: delete-resource
   serviceAccountName: argo-workflows
-
+  ttlStrategy:
+    secondsAfterSuccess: 10
+    secondsAfterFailure: 3600
   arguments:
     parameters:
       - name: &resourceNameParam resource-name
