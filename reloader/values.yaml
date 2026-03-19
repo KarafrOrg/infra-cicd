@@ -2,6 +2,7 @@ reloader:
   reloader:
     enableHA: true
     enableMetricsByNamespace: true
+    logFormat: json
     deployment:
       replicas: 3
       resources:
